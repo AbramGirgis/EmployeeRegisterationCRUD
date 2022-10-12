@@ -75,7 +75,7 @@ public class EmployeeForm {
                     prepareStmt.setString(3, employeePhoneNumber);
                     prepareStmt.executeUpdate();
                     JOptionPane.showMessageDialog(null, "Record is added to the DB!!!");
-
+                    loadTable();
                     txtName.setText("");
                     txtSalary.setText("");
                     txtPhone.setText("");
@@ -100,7 +100,7 @@ public class EmployeeForm {
                     prepareStmt.setString(1, employeeID);
                     ResultSet resultSet = prepareStmt.executeQuery();
 
-                    if (resultSet.next()){
+                    if (resultSet.next()) {
                         String employeeName = resultSet.getString(2);
                         String employeeSalary = resultSet.getString(3);
                         String employeePhoneNumber = resultSet.getString(4);
@@ -109,17 +109,49 @@ public class EmployeeForm {
                         txtSalary.setText(employeeSalary);
                         txtPhone.setText(employeePhoneNumber);
 
-                    }else {
+                    } else {
                         txtName.setText("");
                         txtSalary.setText("");
                         txtPhone.setText("");
-                        JOptionPane.showMessageDialog(null,"Employee ID does not exist!");
+                        JOptionPane.showMessageDialog(null, "Employee ID does not exist!");
                     }
 
                 } catch (SQLException ex) {
                     throw new RuntimeException(ex);
                 }
 
+
+            }
+        });
+
+        // Update Method
+        updateButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                String employeeId, employeeName, employeeSalary, employeePhoneNumber;
+                employeeId = txtSearchID.getText();
+                employeeName = txtName.getText();
+                employeeSalary = txtSalary.getText();
+                employeePhoneNumber = txtPhone.getText();
+
+                try {
+                    prepareStmt = con.prepareStatement("UPDATE employee SET name = ? , salary = ? , phoneNumber = ? WHERE id = ?");
+                    prepareStmt.setString(1, employeeName);
+                    prepareStmt.setString(2, employeeSalary);
+                    prepareStmt.setString(3, employeePhoneNumber);
+                    prepareStmt.setString(4, employeeId);
+                    prepareStmt.executeUpdate();
+                    JOptionPane.showMessageDialog(null, "Record is updated in the DB!!!");
+                    loadTable();
+                    txtName.setText("");
+                    txtSalary.setText("");
+                    txtPhone.setText("");
+                    txtName.requestFocus();
+
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
 
             }
         });
