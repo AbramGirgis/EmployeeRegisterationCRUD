@@ -72,8 +72,15 @@ public class EmployeeForm {
 
             }
         });
+        searchButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
     }
 
+    //Display employee table from the DB
     void loadTable() {
         try {
             prepareStmt = con.prepareStatement("SELECT * from employee");
