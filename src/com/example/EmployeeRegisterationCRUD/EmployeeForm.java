@@ -29,6 +29,7 @@ public class EmployeeForm {
         frame.setVisible(true);
     }
 
+    //DB connection
     public void connectDB() {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -41,9 +42,23 @@ public class EmployeeForm {
         }
     }
 
+    //Display employee table from the DB
+    private void loadTable() {
+        try {
+            prepareStmt = con.prepareStatement("SELECT * from employee");
+            ResultSet resultSet = prepareStmt.executeQuery();
+            tableEmployee.setModel(DbUtils.resultSetToTableModel(resultSet));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
     public EmployeeForm() {
         connectDB();
         loadTable();
+
+        //Add new Method
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -72,24 +87,43 @@ public class EmployeeForm {
 
             }
         });
+
+        //Search Method
         searchButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
+                String employeeID = txtSearchID.getText();
+
+                try {
+                    prepareStmt = con.prepareStatement("SELECT * FROM employee WHERE id = ?");
+                    prepareStmt.setString(1, employeeID);
+                    ResultSet resultSet = prepareStmt.executeQuery();
+
+                    if (resultSet.next()){
+                        String employeeName = resultSet.getString(2);
+                        String employeeSalary = resultSet.getString(3);
+                        String employeePhoneNumber = resultSet.getString(4);
+
+                        txtName.setText(employeeName);
+                        txtSalary.setText(employeeSalary);
+                        txtPhone.setText(employeePhoneNumber);
+
+                    }else {
+                        txtName.setText("");
+                        txtSalary.setText("");
+                        txtPhone.setText("");
+                        JOptionPane.showMessageDialog(null,"Employee ID does not exist!");
+                    }
+
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+
 
             }
         });
     }
 
-    //Display employee table from the DB
-    void loadTable() {
-        try {
-            prepareStmt = con.prepareStatement("SELECT * from employee");
-            ResultSet resultSet = prepareStmt.executeQuery();
-            tableEmployee.setModel(DbUtils.resultSetToTableModel(resultSet));
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-    }
 
 }
