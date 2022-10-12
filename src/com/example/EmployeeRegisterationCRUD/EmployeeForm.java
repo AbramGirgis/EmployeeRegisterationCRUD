@@ -155,6 +155,29 @@ public class EmployeeForm {
 
             }
         });
+
+        // Delete Method
+        deleteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String employeeId = txtSearchID.getText();
+
+                try {
+                    prepareStmt = con.prepareStatement("DELETE FROM employee WHERE id = ?");
+                    prepareStmt.setString(1, employeeId);
+                    prepareStmt.executeUpdate();
+                    JOptionPane.showMessageDialog(null,"Record is deleted successfully!");
+                    loadTable();
+                    txtName.setText("");
+                    txtSalary.setText("");
+                    txtPhone.setText("");
+                    txtName.requestFocus();
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+
+            }
+        });
     }
 
 
